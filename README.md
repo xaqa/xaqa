@@ -2,10 +2,7 @@
 
 <div align="center">
 
-[![site](https://img.shields.io/badge/-xaqa.dev-83bcd0?style=for-the-badge&labelColor=0b0b0d&logo=googlechrome&logoColor=0b0b0d)](https://xaqa.dev)
-[![x](https://img.shields.io/badge/-@xaqa-83bcd0?style=for-the-badge&labelColor=0b0b0d&logo=x&logoColor=0b0b0d)](https://x.com/xaqa)
-[![telegram](https://img.shields.io/badge/-t.me%2Fxaqa-83bcd0?style=for-the-badge&labelColor=0b0b0d&logo=telegram&logoColor=0b0b0d)](https://t.me/xaqa)
-[![mail](https://img.shields.io/badge/-mail-83bcd0?style=for-the-badge&labelColor=0b0b0d&logo=gmail&logoColor=0b0b0d)](mailto:you@xaqa.dev)
+[![github](https://img.shields.io/badge/-github-83bcd0?style=for-the-badge&labelColor=0b0b0d&logo=github&logoColor=0b0b0d)](https://github.com/xaqa)
 
 </div>
 

@@ -1,16 +1,17 @@
 # xaqa profile kit
 
-Everything here goes into a **public** repo named exactly `xaqa`.
+Live at **github.com/xaqa/xaqa** (public). That is the only public repo on the
+account; the twelve private repos were not touched.
 
 ```
-README.md                       -> the profile README (repo root)
-assets/banner.svg               -> animated header
-profile-3d-settings.json        -> 3D contribution calendar, avatar palette
-scripts/commit-art.py           -> paints text into the contribution graph
-.github/workflows/snake.yml     -> animated snake over the contribution grid
-.github/workflows/profile-3d.yml-> 3D voxel contribution calendar
-.github/workflows/commit-art.yml-> monthly repaint of the graph art
-demo/demo.tape                  -> vhs recording script -> demo/demo.gif
+README.md                        -> the profile README (repo root)
+assets/banner.svg                -> animated header
+profile-3d-settings.json         -> 3D contribution calendar, avatar palette
+scripts/commit-art.py            -> paints text into the contribution graph
+.github/workflows/snake.yml      -> animated snake over the contribution grid
+.github/workflows/profile-3d.yml -> 3D voxel contribution calendar
+.github/workflows/commit-art.yml -> monthly repaint of the graph art
+demo/demo.tape                   -> vhs recording script -> demo/demo.gif
 ```
 
 ## Palette
@@ -33,27 +34,38 @@ body" quirk, done in SVG.
 The banner is a single file used in both themes, the way the avatar is. No
 `<picture>` swap, one thing to maintain.
 
-## 1. Account settings (do this first, it is free)
+## 1. Account settings — still manual
 
-- **Avatar** — the one you pasted. Keep it, it is the identity.
+The `gh` token on this machine carries `gist, project, read:org, repo, workflow`
+and **not** `user`, so `PATCH /user` returns 404. These have to be set by hand
+(Settings → Public profile), or re-auth with `gh auth refresh -h github.com -s user`
+first and then they can be scripted:
+
 - **Name** — short. Renders above the username.
 - **Bio** — one line: what you build + where. No emoji wall.
 - **Company / Location / Website** — location renders a live local-time clock.
-- **Social accounts** — Settings → Public profile → Social accounts.
+- **Social accounts** — the badge row in `README.md` currently links only to
+  GitHub. Add site / X / Telegram / mail targets here *and* in the README, so
+  the two agree.
 - **Status** — 🎯 with the message left blank, so only the glyph shows.
-- **Settings → Profile → Contributions & Activity** — enable *Include private contributions on my profile*.
-- No Pro needed for any of this.
 
-## 2. Create the repo
+Leave *Settings → Profile → Contributions & Activity → Include private
+contributions* **off**. It is off now, and the private repos have real commits
+that would render as grey squares fighting the graph art.
 
-1. New repo, name `xaqa`, **public**, initialise with a README.
-2. Copy `README.md`, `assets/`, `scripts/`, `.github/`, `demo/`, `profile-3d-settings.json` in.
-3. Replace `xaqa.dev`, `x.com/xaqa`, `t.me/xaqa`, `you@xaqa.dev` with real links.
-4. Repo → Settings → Actions → General → Workflow permissions → **Read and write**.
-5. Commit. The README shows on the profile Overview tab.
+## 2. Repo
 
-If nothing shows up: repo name must equal the username, README must sit in the
-root of the default branch, repo public, not a fork.
+```
+xaqa/xaqa   public   default branch main
+```
+
+Public is required: a profile README only renders from a public repo, and only
+public-repo commits count toward the contribution graph. Nothing else on the
+account changed visibility. Workflow permissions were set to **Read and write**
+via `PUT /repos/xaqa/xaqa/actions/permissions/workflow`.
+
+If the README ever stops showing: repo name must equal the username, README must
+sit in the root of the default branch, repo public, not a fork.
 
 ## 3. Actions
 
@@ -63,7 +75,11 @@ root of the default branch, repo public, not a fork.
 | `profile-3d.yml` | this branch → `profile-3d-contrib/profile-sky.svg` | `SETTING_JSON` limits it to that one file; without it the action writes ten |
 | `commit-art.yml` | this branch | 330 commits, monthly |
 
-Run each once from the Actions tab, then reload your profile.
+All three have run once and their outputs verify (200 from raw). `commit-art.yml`
+and `profile-3d.yml` share `concurrency: main-writer`, because both push to
+`main`: the first dispatch of the art job lost that race mid-run
+(`non-fast-forward`). `push_all()` in the script now rebases onto the remote and
+retries three times, so a lost race cannot leave the art half-pushed.
 
 `SETTING_JSON` accepts one settings object or an array; `fileName` is resolved
 inside `profile-3d-contrib/`. The shipped file is the upstream voxel block
@@ -86,9 +102,12 @@ it always matches, even if the account email changes.
 
 "X A Q A" is 66 cells × 5 commits = 330 commits, 2026-01-04 → 2026-09-05,
 centred in the 53×7 grid. Every commit is stamped 12:00 UTC so it lands on the
-same calendar day in every timezone. The workflow repaints monthly as the
-12-month window slides. Do not run it more than once a month or you stack
-duplicate layers.
+same calendar day in every timezone. **It has already run for this month** — do
+not run it again now or you stack duplicate layers. The monthly job repaints as
+the 12-month window slides.
+
+Five commits per cell is the level-4 bucket because the account's busiest real
+day in the last year is 1 commit, so nothing outranks the art.
 
 ## 5. Terminal demo
 
