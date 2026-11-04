@@ -1,0 +1,3 @@
+# The painter is tooling, not the repo's content: keep it out of the language bar
+# so the profile repo card shows no language dot.
+scripts/commit-art.py linguist-generated=true
