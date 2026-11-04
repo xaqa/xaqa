@@ -9,6 +9,11 @@ on:
 permissions:
   contents: write
 
+# shares this group with profile-3d.yml: both push to main, never concurrently
+concurrency:
+  group: main-writer
+  cancel-in-progress: false
+
 jobs:
   paint:
     runs-on: ubuntu-latest

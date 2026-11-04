@@ -152,7 +152,18 @@ def paint(rows: list[tuple[dt.datetime, int]], root: Path, name: str, email: str
             cwd=root, env=env, check=True,
         )
     if push:
-        subprocess.run(["git", "push"], cwd=root, check=True)
+        push_all(root, name, email)
+
+
+def push_all(root: Path, name: str, email: str) -> None:
+    """Another workflow may have pushed to the branch while we were committing."""
+    ident = ["-c", f"user.name={name}", "-c", f"user.email={email}"]
+    for attempt in range(1, 4):
+        subprocess.run(["git", *ident, "pull", "--rebase", "--autostash", "--quiet"], cwd=root, check=False)
+        if subprocess.run(["git", *ident, "push"], cwd=root, check=False).returncode == 0:
+            return
+        print(f"push attempt {attempt} rejected, rebasing and retrying", file=sys.stderr)
+    raise SystemExit("git push failed after 3 attempts (branch still diverged)")
 
 
 def main() -> None:

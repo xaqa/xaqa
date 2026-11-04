@@ -8,6 +8,11 @@ on:
 permissions:
   contents: write
 
+# shares this group with commit-art.yml: both push to main, never concurrently
+concurrency:
+  group: main-writer
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
