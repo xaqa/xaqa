@@ -1,7 +1,7 @@
 # xaqa profile kit
 
 Live at **github.com/xaqa/xaqa** (public). That is the only public repo on the
-account; the twelve private repos were not touched.
+account; the eleven private repos were not touched.
 
 ```
 README.md                        -> the profile README (repo root)
