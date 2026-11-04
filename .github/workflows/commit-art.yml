@@ -1,0 +1,28 @@
+name: commit-art
+
+on:
+  schedule:
+    # monthly: the art must be repainted as the 12-month window slides forward
+    - cron: "0 6 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  paint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Paint the contribution graph
+        env:
+          ART_TEXT: "X A Q A"
+          # must be an email attached to your account, or the squares go nowhere
+          ART_EMAIL: "307261345+xaqa@users.noreply.github.com"
+          ART_NAME: "xaqa"
+        run: |
+          python3 scripts/commit-art.py "$ART_TEXT" \
+            --name "$ART_NAME" --email "$ART_EMAIL" --push
