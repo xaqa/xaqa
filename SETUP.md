@@ -13,10 +13,12 @@ data/*.txt                       -> one committed file per painted day
 
 ## README
 
-One line: a live `shields.io` commits badge, endpoint `github/commit-activity/t`,
-so the number is read off the repo rather than typed in. Nothing else renders —
-no banner, no streak card, no stats widgets, no emoji. The usual widget hosts
-were probed 2026-11-04: `github-readme-stats` answers 503, and both
+One line, two live badges. The first is the `shields.io` commits counter
+(`github/commit-activity/t`), read off the repo rather than typed in — it is the
+only place the total should appear. The second is GitHub's own status badge for
+`commit-art.yml`, which cannot rot the way a third-party host can. Nothing else
+renders — no banner, no streak card, no stats widgets, no emoji. The usual
+widget hosts were probed 2026-11-04: `github-readme-stats` answers 503, and both
 `github-readme-activity-graph` and `github-profile-trophy` answer 402, so those
 three cannot be used.
 
@@ -70,7 +72,7 @@ sit in the root of the default branch, repo public, not a fork.
 
 | workflow | writes | notes |
 |---|---|---|
-| `commit-art.yml` | this branch | 339 commits, monthly |
+| `commit-art.yml` | this branch | monthly repaint of the art |
 
 `commit-art.yml` is the only workflow left. `push_all()` in the script rebases
 onto the remote and retries three times, so a concurrent push cannot leave the
@@ -91,11 +93,12 @@ commit on the default branch, author email attached to the account. The email
 above is the numeric `users.noreply.github.com` form for user ID 307261345, so
 it always matches, even if the account email changes.
 
-"X A Q A" is 66 cells × 5 commits = 330 commits, 2026-01-04 → 2026-09-05,
+"X A Q A" is 66 cells × 5 commits = 330 art commits, 2026-01-04 → 2026-09-05,
 centred in the 53×7 grid. Every commit is stamped 12:00 UTC so it lands on the
-same calendar day in every timezone. Nine ordinary commits on 2026-11-03/04
-(README and doc work, same noreply author) bring the repo to 339 commits, which
-is the number the graph and the badge show. **It has already run for this month** — do
+same calendar day in every timezone. Work commits share the same window and the
+same noreply author, so they deepen the day they land on; the repo total is
+whatever the badge reports (341 at the time of writing) and it moves with every
+commit — never pin it in prose. **It has already run for this month** — do
 not run it again now or you stack duplicate layers. The monthly job repaints as
 the 12-month window slides.
 

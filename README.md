@@ -1,1 +1,1 @@
-[![commits](https://img.shields.io/github/commit-activity/t/xaqa/xaqa?style=flat&label=commits&color=blue)](https://github.com/xaqa/xaqa)
+[![commits](https://img.shields.io/github/commit-activity/t/xaqa/xaqa?style=flat&label=commits&color=blue)](https://github.com/xaqa/xaqa) [![commit-art](https://github.com/xaqa/xaqa/actions/workflows/commit-art.yml/badge.svg)](https://github.com/xaqa/xaqa/actions/workflows/commit-art.yml)
