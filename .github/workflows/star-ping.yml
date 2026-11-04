@@ -1,0 +1,35 @@
+name: star-ping
+
+on:
+  watch:
+    types: [started]
+  fork:
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send a Telegram DM
+        env:
+          TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          CHAT: ${{ secrets.TELEGRAM_CHAT_ID }}
+          ACTOR: ${{ github.actor }}
+          EVENT: ${{ github.event_name }}
+          REPO: ${{ github.repository }}
+        run: |
+          # the token only ever lives in the URL, which is never echoed; GitHub
+          # masks secret values in logs as a second line of defence
+          case "$EVENT" in
+            watch) TEXT="new star: ${ACTOR} starred ${REPO}" ;;
+            fork)  TEXT="new fork: ${ACTOR} forked ${REPO}" ;;
+            *)     TEXT="test ping from the star-ping workflow" ;;
+          esac
+          CODE=$(curl -s -o /dev/null -w '%{http_code}' \
+            --retry 3 --retry-delay 2 \
+            -X POST "https://api.telegram.org/bot${TOKEN}/sendMessage" \
+            -d "chat_id=${CHAT}" -d "text=${TEXT}")
+          echo "telegram http ${CODE}"
+          [ "$CODE" = "200" ]
