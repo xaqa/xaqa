@@ -9,7 +9,7 @@ on:
 permissions:
   contents: write
 
-# shares this group with profile-3d.yml: both push to main, never concurrently
+# one writer at a time: a repaint and a manual push must not race on main
 concurrency:
   group: main-writer
   cancel-in-progress: false
