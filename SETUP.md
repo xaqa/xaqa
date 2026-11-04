@@ -4,7 +4,8 @@ Live at **github.com/xaqa/xaqa** (public). That is the only public repo on the
 account; the eleven private repos were not touched.
 
 ```
-README.md                        -> the profile README (repo root), text only
+README.md                        -> the profile README (repo root), one badge
+.gitattributes                   -> keeps the painter out of the language stats
 scripts/commit-art.py            -> paints text into the contribution graph
 data/*.txt                       -> one committed file per painted day
 .github/workflows/commit-art.yml -> monthly repaint of the graph art
@@ -12,9 +13,17 @@ data/*.txt                       -> one committed file per painted day
 
 ## README
 
-Three lines of text: handle, languages, one clause. No banner, no badges, no
-stats widgets, no emoji, no images. The profile's whole look is the painted
-contribution graph plus the text next to it.
+One line: a live `shields.io` commits badge, endpoint `github/commit-activity/t`,
+so the number is read off the repo rather than typed in. Nothing else renders —
+no banner, no streak card, no stats widgets, no emoji. The usual widget hosts
+were probed 2026-11-04: `github-readme-stats` answers 503, and both
+`github-readme-activity-graph` and `github-profile-trophy` answer 402, so those
+three cannot be used.
+
+The repo card under "Popular repositories" is deliberately bare: the description
+was cleared, the wiki and projects tabs are off, and `.gitattributes` marks
+`scripts/commit-art.py` as `linguist-generated`, which drops the repo's language
+map to `{}` and with it the Python dot.
 
 Removed 2026-11-04, as clutter: the animated banner (`assets/banner.svg`), the
 snake (`.github/workflows/snake.yml` and its `output` branch), the 3D voxel
@@ -32,8 +41,10 @@ first and then they can be scripted:
 - **Bio** — one line: what you build. No emoji wall.
 - **Company / Location / Website** — location renders a live local-time clock.
 - **Social accounts** — the README carries no links, so this is the only place
-  the account can point anywhere. Add site / X / Telegram / mail here.
-- **Status** — 🎯 with the message left blank, so only the glyph shows.
+  the account can point anywhere. Currently `@7800` (X) plus `zrpc` and `tolr`,
+  both Instagram links, which look like leftovers; add site / X / Telegram / mail.
+- **Status** — reads `🎯 Focusing` right now ("Focusing" is the busy preset, not
+  a typed message). Either leave the glyph bare or clear the status entirely.
 
 Leave *Settings → Profile → Contributions & Activity → Include private
 contributions* **off**. It is off now, and the private repos have real commits
@@ -46,7 +57,9 @@ xaqa/xaqa   public   default branch main
 ```
 
 Public is required: a profile README only renders from a public repo, and only
-public-repo commits count toward the contribution graph. Nothing else on the
+public-repo commits count toward the contribution graph (while "Include private
+contributions" stays off). Making this repo private would blank the README area
+*and* zero the graph, so it stays public. Nothing else on the
 account changed visibility. Workflow permissions were set to **Read and write**
 via `PUT /repos/xaqa/xaqa/actions/permissions/workflow`.
 
@@ -57,7 +70,7 @@ sit in the root of the default branch, repo public, not a fork.
 
 | workflow | writes | notes |
 |---|---|---|
-| `commit-art.yml` | this branch | 330 commits, monthly |
+| `commit-art.yml` | this branch | 339 commits, monthly |
 
 `commit-art.yml` is the only workflow left. `push_all()` in the script rebases
 onto the remote and retries three times, so a concurrent push cannot leave the
@@ -80,9 +93,16 @@ it always matches, even if the account email changes.
 
 "X A Q A" is 66 cells × 5 commits = 330 commits, 2026-01-04 → 2026-09-05,
 centred in the 53×7 grid. Every commit is stamped 12:00 UTC so it lands on the
-same calendar day in every timezone. **It has already run for this month** — do
+same calendar day in every timezone. Nine ordinary commits on 2026-11-03/04
+(README and doc work, same noreply author) bring the repo to 339 commits, which
+is the number the graph and the badge show. **It has already run for this month** — do
 not run it again now or you stack duplicate layers. The monthly job repaints as
 the 12-month window slides.
 
-Five commits per cell is the level-4 bucket because the account's busiest real
-day in the last year is 1 commit, so nothing outranks the art.
+Five commits per cell used to be the level-4 bucket, back when the busiest real
+day in the last year held 1 commit. The busiest day the graph can see now is
+2026-11-03 with 8, so the art cells sit one bucket below the top and that one
+real day renders darker than the letters. The private repos are busier still
+(2026-10-31 holds 41 commits), but they are invisible while "Include private
+contributions" stays off — switching it on would light 15 blank cells inside the
+art's canvas, three of them darker than the art itself.
