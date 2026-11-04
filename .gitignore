@@ -1,0 +1,3 @@
+# build output of scripts/build-site.py, deployed by the pages workflow
+_site/
+__pycache__/

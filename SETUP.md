@@ -4,11 +4,16 @@ Live at **github.com/xaqa/xaqa** (public). That is the only public repo on the
 account; the eleven private repos were not touched.
 
 ```
-README.md                        -> the profile README (repo root), one badge
+README.md                        -> the profile README (repo root), two badges
+LICENSE                          -> MIT
 .gitattributes                   -> keeps the painter out of the language stats
+.gitignore                       -> ignores the site build output
 scripts/commit-art.py            -> paints text into the contribution graph
+scripts/build-site.py            -> renders the site from data/ + the API
 data/*.txt                       -> one committed file per painted day
 .github/workflows/commit-art.yml -> monthly repaint of the graph art
+.github/workflows/pages.yml      -> builds and deploys the site
+.github/workflows/star-ping.yml  -> DMs a Telegram ping on star or fork
 ```
 
 ## README
@@ -47,6 +52,13 @@ first and then they can be scripted:
   both Instagram links, which look like leftovers; add site / X / Telegram / mail.
 - **Status** — reads `🎯 Focusing` right now ("Focusing" is the busy preset, not
   a typed message). Either leave the glyph bare or clear the status entirely.
+- **Pinned repositories** — six slots. Pinning a private repo publishes its name,
+  so pin public work first; a private pin renders as a grey card with a lock.
+- **Social preview** — Settings → Social preview → upload
+  `~/Downloads/xaqa-social-preview.png` (1280×640). There is no API for this one.
+- **Sponsor** — the *Public Sponsor* achievement needs a real $1/mo sponsorship
+  paid to someone else's account. Unscriptable, and the only achievement here
+  that costs money.
 
 Leave *Settings → Profile → Contributions & Activity → Include private
 contributions* **off**. It is off now, and the private repos have real commits
@@ -73,13 +85,52 @@ sit in the root of the default branch, repo public, not a fork.
 | workflow | writes | notes |
 |---|---|---|
 | `commit-art.yml` | this branch | monthly repaint of the art |
+| `pages.yml` | nothing | builds `_site/` and deploys it as an artifact |
+| `star-ping.yml` | nothing | Telegram DM on `watch` and `fork` |
 
-`commit-art.yml` is the only workflow left. `push_all()` in the script rebases
-onto the remote and retries three times, so a concurrent push cannot leave the
-art half-pushed; the workflow declares `concurrency: main-writer` for the same
-reason.
+`commit-art.yml` is the only workflow that commits anything. `push_all()` in the
+script rebases onto the remote and retries three times, so a concurrent push
+cannot leave the art half-pushed, and it declares `concurrency: main-writer` for
+the same reason. The other two hold `permissions: {}` or `contents: read` and
+never write history — deliberately, because any commit they made would land
+inside the canvas.
 
-## 4. Contribution art
+## 4. Site
+
+Live at **https://xaqa.github.io/xaqa/**, served by GitHub Pages with
+`build_type=workflow`. It is a still of the same canvas the profile shows:
+`data/*.txt` says which days are painted, and the API fills in live commit /
+star / fork counts at build time. One file, inline SVG, no JavaScript, no
+third-party assets, theme-aware through `prefers-color-scheme`.
+
+It redeploys on any push touching `data/**`, `scripts/build-site.py` or
+`pages.yml`, or on `workflow_dispatch`. The deploy uploads an artifact, so
+nothing is committed and the graph stays untouched.
+
+```bash
+gh api -X POST repos/xaqa/xaqa/pages -f build_type=workflow   # enable or repair
+python3 scripts/build-site.py                                 # build locally into _site/
+```
+
+The repo's website field points at the site URL, which is the only chrome on the
+repository page that is not the README.
+
+## 5. Star ping
+
+`star-ping.yml` DMs the Telegram chat when someone stars or forks the repo. Two
+Actions secrets feed it, and their values must never be printed:
+
+```bash
+gh secret set TELEGRAM_BOT_TOKEN --repo xaqa/xaqa --body "$TG_TOKEN"
+gh secret set TELEGRAM_CHAT_ID  --repo xaqa/xaqa --body "$TG_CHAT"
+```
+
+Both live in `~/warroom-clean/state/telegram.env` — that is the scanner bot, not
+the unrelated token under `~/.paperclip/telegram/`. Inside the workflow the token
+is only interpolated into a URL that is never echoed, and GitHub masks secret
+values in logs as a second line of defence.
+
+## 6. Contribution art
 
 ```bash
 python3 scripts/commit-art.py "X A Q A" --preview        # see the shape
